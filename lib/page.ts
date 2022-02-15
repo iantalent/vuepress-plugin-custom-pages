@@ -1,4 +1,5 @@
-import {FragmentsContainer, FragmentsList, Heading} from "markdown-generator";
+import {FragmentsContainer, FragmentsList, Heading, isFragmentsContainer} from "markdown-generator";
+import {type} from "os";
 
 export interface Page extends FragmentsContainer
 {
@@ -7,11 +8,27 @@ export interface Page extends FragmentsContainer
 	frontmatter(): any
 }
 
+export type MetaItem = {
+	name: string,
+	content: string
+}
+
+export type Frontmatter = {
+	title?: string,
+	lang?: string,
+	description?: string,
+	layout?: string,
+	permalink?: string,
+	metaTitle?: string,
+	meta?: Array<MetaItem>,
+	canonicalUrl?: string
+}
+
 export class SimplePage implements Page
 {
 	private readonly fragments: FragmentsList = [];
 	
-	constructor(private readonly $name: string, private readonly $path: string, private readonly $frontmatter = {})
+	constructor(private readonly $name: string, private readonly $path: string, private readonly $frontmatter: Frontmatter = {})
 	{
 		this.fragments.push(new Heading(this.$name, 1));
 	}
@@ -45,4 +62,10 @@ export class SimplePage implements Page
 	{
 		return this.$frontmatter;
 	}
+}
+
+export function isPage(page: any): page is Page
+{
+	return typeof page['name'] === 'function' && typeof page['path'] === 'function' &&
+		page['frontmatter'] === 'function' && isFragmentsContainer(page);
 }
