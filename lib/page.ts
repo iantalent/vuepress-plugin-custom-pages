@@ -1,8 +1,9 @@
 import {FragmentsContainer, FragmentsList, Heading, isFragmentsContainer} from "markdown-generator";
-import {type} from "os";
 
 export interface Page extends FragmentsContainer
 {
+	name(): string
+	
 	path(): string
 	
 	frontmatter(): any
@@ -67,5 +68,5 @@ export class SimplePage implements Page
 export function isPage(page: any): page is Page
 {
 	return typeof page['name'] === 'function' && typeof page['path'] === 'function' &&
-		page['frontmatter'] === 'function' && isFragmentsContainer(page);
+		typeof page['frontmatter'] === 'function' && isFragmentsContainer(page);
 }
